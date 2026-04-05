@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>استبيان ذكي</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-orb"></div>
+  <div class="bg-orb bg-orb-2"></div>
+
+  <main class="page">
+    <section class="app-shell">
+      <aside class="info-panel">
+        <div class="brand">
+          <span class="brand-dot"></span>
+          استبيان ذكي
+        </div>
+
+        <h1>تحليل شخصية تفاعلي<br />بأسلوب هادئ وواضح</h1>
+        <p class="lead">
+          أجب عن مجموعة من الأسئلة القصيرة، وفي النهاية ستحصل على قراءة متوازنة
+          لشخصيتك، أسلوبك في التفكير، وطريقتك في التعامل مع الناس والقرارات.
+        </p>
+
+        <div class="stats">
+          <div class="stat">
+            <strong id="statQuestions">30 سؤال</strong>
+            <span>رحلة تحليل متدرجة</span>
+          </div>
+          <div class="stat">
+            <strong>7 أبعاد</strong>
+            <span>نتيجة أعمق</span>
+          </div>
+          <div class="stat">
+            <strong>5–7 دقائق</strong>
+            <span>مدة متوسطة</span>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <div class="info-title">يركز التحليل على</div>
+          <div class="chips">
+            <span class="chip">التواصل</span>
+            <span class="chip">المنهجية</span>
+            <span class="chip">الحسم</span>
+            <span class="chip">الإبداع</span>
+            <span class="chip">الهدوء</span>
+            <span class="chip">التعاطف</span>
+            <span class="chip">الطموح</span>
+          </div>
+        </div>
+      </aside>
+
+      <section class="chat-panel">
+        <div class="chat-topbar">
+          <div class="assistant-meta">
+            <div class="avatar">AI</div>
+            <div>
+              <h2>استبيان ذكي</h2>
+              <p>اختيار واحد فقط في كل سؤال</p>
+            </div>
+          </div>
+
+          <div class="top-actions">
+            <div class="badge">تحليل شخصية</div>
+            <div class="badge">أسئلة تفاعلية</div>
+            <div class="badge">نتيجة فورية</div>
+          </div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-meta">
+            <span>تقدم الاستبيان</span>
+            <span id="progressText">1 / 31</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="chat-body" id="chatBody"></div>
+
+        <div class="chat-input locked">
+          <div class="input-icon">✦</div>
+          <input type="text" placeholder="الإجابة تتم من خلال الاختيارات الجاهزة" disabled />
+          <button class="send-btn" disabled>اختيار واحد فقط</button>
+        </div>
+
+        <div class="footer-note">
+          النتيجة قراءة عامة للشخصية مبنية على إجاباتك داخل الاستبيان.
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
