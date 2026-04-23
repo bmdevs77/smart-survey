@@ -3,35 +3,170 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>استبيان ذكي</title>
+  <title>اعرف نفسك</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="bg-orb"></div>
   <div class="bg-orb bg-orb-2"></div>
 
-  <main class="page">
+  <!-- Home Page -->
+  <section class="home-page" id="homePage">
+    <header class="home-navbar">
+      <div class="logo">
+        <span class="logo-dot"></span>
+        اعرف نفسك
+      </div>
+
+      <div class="home-nav-actions">
+        <button class="ghost-btn" id="scrollToSectionsBtn">الأقسام</button>
+        <button class="primary-btn" id="startFromHeroBtn">ابدأ الآن</button>
+      </div>
+    </header>
+
+    <main class="home-main">
+      <section class="hero">
+        <div class="hero-text">
+          <div class="hero-badge">استبيان تفاعلي هادئ وعصري</div>
+          <h1>اعرف نفسك</h1>
+          <p class="hero-lead">
+            رحلة قصيرة تساعدك على فهم ذاتك بصورة أوضح من خلال ثلاثة محاور
+            متوازنة: الوعي الذاتي الصحي، الوعي الذاتي الاجتماعي، ومستوى التفقه الديني.
+          </p>
+
+          <div class="hero-actions">
+            <button class="primary-btn large" id="startQuizBtn">ابدأ الاستبيان</button>
+            <button class="secondary-btn large" id="learnMoreBtn">تعرّف على الأقسام</button>
+          </div>
+
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <strong>30</strong>
+              <span>سؤالًا</span>
+            </div>
+            <div class="hero-stat">
+              <strong>3</strong>
+              <span>أقسام</span>
+            </div>
+            <div class="hero-stat">
+              <strong>5–7</strong>
+              <span>دقائق</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <div class="hero-card-top">لمحة سريعة</div>
+          <h3>ماذا ستجد في هذا الاستبيان؟</h3>
+          <ul>
+            <li>أسئلة متنوعة غير مكررة في أسلوب الإجابة</li>
+            <li>واجهة مريحة وسهلة الاستخدام</li>
+            <li>نتيجة نهائية واضحة لكل قسم</li>
+            <li>قراءة عامة تساعدك على التأمل الذاتي</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="sections-preview" id="sectionsPreview">
+        <div class="section-heading">
+          <span>الأقسام الأساسية</span>
+          <h2>الاستبيان مقسم إلى ثلاثة محاور</h2>
+          <p>
+            كل محور يعرض مجموعة أسئلة تساعدك على فهم جانب مختلف من ذاتك بصورة
+            متوازنة وواضحة.
+          </p>
+        </div>
+
+        <div class="preview-grid">
+          <article class="preview-card">
+            <div class="preview-icon">01</div>
+            <h3>مستوى الوعي الذاتي الصحي</h3>
+            <p>
+              يركز على فهم النفس، التعامل مع المشاعر، ملاحظة الضغط النفسي،
+              واستعادة التوازن الداخلي.
+            </p>
+          </article>
+
+          <article class="preview-card">
+            <div class="preview-icon">02</div>
+            <h3>مستوى الوعي الذاتي الاجتماعي</h3>
+            <p>
+              يركز على العلاقات، الحدود الشخصية، فهم الآخرين، وأسلوب التعامل في
+              المواقف الاجتماعية المختلفة.
+            </p>
+          </article>
+
+          <article class="preview-card">
+            <div class="preview-icon">03</div>
+            <h3>مستوى التفقه الديني</h3>
+            <p>
+              يركز على التعلم، التثبت، فهم ما يلزم من أمور الدين، وربط المعرفة
+              بالسلوك اليومي.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="how-it-works">
+        <div class="section-heading">
+          <span>كيف يعمل؟</span>
+          <h2>ثلاث خطوات بسيطة</h2>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <h3>اكتب اسمك</h3>
+            <p>سيظهر اسمك في النتيجة النهائية فقط داخل التجربة.</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <h3>أجب عن الأسئلة</h3>
+            <p>أجب بهدوء عن 30 سؤالًا موزعة على ثلاثة أقسام.</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <h3>احصل على النتيجة</h3>
+            <p>ستظهر لك قراءة عامة توضّح مستواك في كل محور.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="home-footer">
+      <div>اعرف نفسك</div>
+      <p>
+        قراءة عامة تساعد على التأمل الذاتي، وليست تشخيصًا نفسيًا أو حكمًا نهائيًا.
+      </p>
+    </footer>
+  </section>
+
+  <!-- Quiz Page -->
+  <main class="page hidden" id="quizPage">
     <section class="app-shell">
       <aside class="info-panel">
         <div class="brand">
           <span class="brand-dot"></span>
-          استبيان ذكي
+          اعرف نفسك
         </div>
 
-        <h1>تحليل شخصية تفاعلي<br />بأسلوب هادئ وواضح</h1>
+        <h1>استبيان تفاعلي<br />بثلاثة أقسام واضحة</h1>
         <p class="lead">
-          أجب عن مجموعة من الأسئلة القصيرة، وفي النهاية ستحصل على قراءة متوازنة
-          لشخصيتك، أسلوبك في التفكير، وطريقتك في التعامل مع الناس والقرارات.
+          أجب عن 30 سؤالًا قصيرًا مقسمة على 3 أقسام: مستوى الوعي الذاتي الصحي،
+          مستوى الوعي الذاتي الاجتماعي، ومستوى التفقه الديني، وفي النهاية ستحصل
+          على قراءة مختصرة ومتوازنة لنتيجتك.
         </p>
 
         <div class="stats">
           <div class="stat">
             <strong id="statQuestions">30 سؤال</strong>
-            <span>رحلة تحليل متدرجة</span>
+            <span>مقسمة على 3 أقسام</span>
           </div>
           <div class="stat">
-            <strong>7 أبعاد</strong>
-            <span>نتيجة أعمق</span>
+            <strong>3 أقسام</strong>
+            <span>نتيجة أوضح</span>
           </div>
           <div class="stat">
             <strong>5–7 دقائق</strong>
@@ -40,17 +175,15 @@
         </div>
 
         <div class="info-box">
-          <div class="info-title">يركز التحليل على</div>
+          <div class="info-title">أقسام الاستبيان</div>
           <div class="chips">
-            <span class="chip">التواصل</span>
-            <span class="chip">المنهجية</span>
-            <span class="chip">الحسم</span>
-            <span class="chip">الإبداع</span>
-            <span class="chip">الهدوء</span>
-            <span class="chip">التعاطف</span>
-            <span class="chip">الطموح</span>
+            <span class="chip">الوعي الذاتي الصحي</span>
+            <span class="chip">الوعي الذاتي الاجتماعي</span>
+            <span class="chip">التفقه الديني</span>
           </div>
         </div>
+
+        <button class="back-home-btn" id="backHomeBtn">العودة إلى الصفحة الرئيسية</button>
       </aside>
 
       <section class="chat-panel">
@@ -58,14 +191,14 @@
           <div class="assistant-meta">
             <div class="avatar">AI</div>
             <div>
-              <h2>استبيان ذكي</h2>
+              <h2>اعرف نفسك</h2>
               <p>اختيار واحد فقط في كل سؤال</p>
             </div>
           </div>
 
           <div class="top-actions">
-            <div class="badge">تحليل شخصية</div>
-            <div class="badge">أسئلة تفاعلية</div>
+            <div class="badge">3 أقسام</div>
+            <div class="badge">30 سؤال</div>
             <div class="badge">نتيجة فورية</div>
           </div>
         </div>
@@ -89,7 +222,7 @@
         </div>
 
         <div class="footer-note">
-          النتيجة قراءة عامة للشخصية مبنية على إجاباتك داخل الاستبيان.
+          النتيجة قراءة عامة مبنية على إجاباتك داخل الاستبيان وليست تشخيصًا متخصصًا.
         </div>
       </section>
     </section>
