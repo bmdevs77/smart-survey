@@ -1,304 +1,344 @@
-const dimensions = ["social", "structured", "decisive", "creative", "empathetic", "calm", "ambitious"];
+const homePage = document.getElementById("homePage");
+const quizPage = document.getElementById("quizPage");
+const startQuizBtn = document.getElementById("startQuizBtn");
+const startFromHeroBtn = document.getElementById("startFromHeroBtn");
+const backHomeBtn = document.getElementById("backHomeBtn");
+const learnMoreBtn = document.getElementById("learnMoreBtn");
+const scrollToSectionsBtn = document.getElementById("scrollToSectionsBtn");
+const sectionsPreview = document.getElementById("sectionsPreview");
 
-const dimensionLabels = {
-  social: "التواصل",
-  structured: "المنهجية",
-  decisive: "الحسم",
-  creative: "الإبداع",
-  empathetic: "التعاطف",
-  calm: "الهدوء",
-  ambitious: "الطموح"
+const sectionLabels = {
+  mental: "مستوى الوعي الذاتي الصحي",
+  social: "مستوى الوعي الذاتي الاجتماعي",
+  religious: "مستوى التفقه الديني"
 };
 
 const scores = {
+  mental: 0,
   social: 0,
-  structured: 0,
-  decisive: 0,
-  creative: 0,
-  empathetic: 0,
-  calm: 0,
-  ambitious: 0
+  religious: 0
 };
 
 let userName = "";
 let currentStep = 0;
 
 const questions = [
+  // القسم الأول
   {
-    text: "ما الذي يعبر عنك أكثر على السوشيال ميديا؟",
+    section: "mental",
+    text: "عندما تشعر بتوتر مفاجئ، ما أول ما تفعله؟",
     options: [
-      { label: "أتابع محتوى مفيد وتحليلي", sub: "أحب القيمة والوضوح.", weight: { structured: 2, calm: 1 } },
-      { label: "أتابع قصص نجاح وتطوير ذات", sub: "أحب التحفيز والطموح.", weight: { ambitious: 2, decisive: 1 } },
-      { label: "أتابع محتوى إبداعي وأفكار", sub: "أميل للجديد والابتكار.", weight: { creative: 2 } },
-      { label: "أتابع محتوى اجتماعي وتجارب ناس", sub: "أهتم بالناس والمشاعر.", weight: { social: 1, empathetic: 2 } }
+      { label: "أحاول فهم سبب التوتر", sub: "أبدأ بملاحظة ما يجري داخلي.", weight: { mental: 4 } },
+      { label: "أشغل نفسي بأي شيء لتجاهله", sub: "أحاول صرف انتباهي عنه.", weight: { mental: 3 } },
+      { label: "أتركه يمر دون تفكير", sub: "لا أتوقف كثيرًا عنده.", weight: { mental: 2 } },
+      { label: "أتوتر أكثر ولا أعرف كيف أتصرف", sub: "أفقد السيطرة بسرعة.", weight: { mental: 1 } }
     ]
   },
   {
-    text: "في يومك العادي، متى تكون أفضل نسخة منك؟",
+    section: "mental",
+    text: "إذا مررت بموقف أزعجك كثيرًا، كيف تتعامل معه؟",
     options: [
-      { label: "عندما يكون يومي مرتبًا وواضحًا", sub: "الوضوح يريحني.", weight: { structured: 2, calm: 1 } },
-      { label: "عندما أنجز أشياء كثيرة", sub: "الإنجاز يعطيني طاقة.", weight: { ambitious: 2, decisive: 1 } },
-      { label: "عندما أعمل على شيء جديد", sub: "التجديد ينعشني.", weight: { creative: 2 } },
-      { label: "عندما أكون وسط ناس قريبين", sub: "العلاقات مهمة لي.", weight: { social: 2, empathetic: 1 } }
+      { label: "أفكر فيه بهدوء وأحاول فهمه", sub: "أميل للتحليل الهادئ.", weight: { mental: 4 } },
+      { label: "أتحدث مع شخص قريب مني", sub: "أفضل المساندة والمشاركة.", weight: { mental: 3 } },
+      { label: "أتجنبه تمامًا وأحاول نسيانه", sub: "أميل إلى التجنب أحيانًا.", weight: { mental: 2 } },
+      { label: "أبقى منزعجًا دون تصرف واضح", sub: "يصعب علي التعامل معه.", weight: { mental: 1 } }
     ]
   },
   {
-    text: "إذا كنت في جلسة مع أشخاص جدد، غالبًا أنت...",
+    section: "mental",
+    text: "عندما تخطئ، كيف يكون رد فعلك غالبًا؟",
     options: [
-      { label: "تراقب في البداية ثم تدخل", sub: "أفضل فهم الجو أولًا.", weight: { calm: 2, structured: 1 } },
-      { label: "تبادر بالكلام والتعارف", sub: "أحب كسر الحاجز بسرعة.", weight: { social: 2, decisive: 1 } },
-      { label: "تطرح موضوعًا مختلفًا", sub: "أحب ترك لمسة خاصة.", weight: { creative: 2 } },
-      { label: "تحاول جعل الكل مرتاح", sub: "راحة الموجودين مهمة.", weight: { empathetic: 2, social: 1 } }
+      { label: "أعترف بالخطأ فورًا وأحاول إصلاحه", sub: "أميل للمواجهة والتصحيح.", weight: { mental: 4 } },
+      { label: "أعترف بعد بعض الوقت", sub: "أحتاج وقتًا قبل الإقرار.", weight: { mental: 3 } },
+      { label: "أبرر لنفسي ما حدث", sub: "أبحث عن مخرج داخلي.", weight: { mental: 2 } },
+      { label: "أنكر أو أنزعج من المواجهة", sub: "أجد صعوبة في التقبل.", weight: { mental: 1 } }
     ]
   },
   {
-    text: "عندما تستيقظ صباحًا، ما أول شيء يشغل بالك عادة؟",
+    section: "mental",
+    text: "عندما تكون تحت ضغط، كيف تتصرف؟",
     options: [
-      { label: "ماذا سأفعل اليوم بالتحديد", sub: "أفكر في الخطة.", weight: { structured: 2 } },
-      { label: "ما أهم هدف أريد تحقيقه", sub: "أركز على الإنجاز.", weight: { ambitious: 2, decisive: 1 } },
-      { label: "هل لدي مساحة لشيء مختلف اليوم", sub: "أحب وجود مساحة للتجديد.", weight: { creative: 2 } },
-      { label: "مع من سأتواصل أو ألتقي", sub: "البعد الاجتماعي حاضر دائمًا.", weight: { social: 2 } }
+      { label: "أنظم وقتي وأحاول تهدئة نفسي", sub: "أتعامل بخطوات واضحة.", weight: { mental: 4 } },
+      { label: "أستمر في العمل رغم التوتر", sub: "أكمل لكن دون راحة كافية.", weight: { mental: 3 } },
+      { label: "أهرب من المسؤولية مؤقتًا", sub: "أحتاج للابتعاد أحيانًا.", weight: { mental: 2 } },
+      { label: "أشعر بالارتباك ولا أستطيع التصرف", sub: "يضيع مني الاتجاه.", weight: { mental: 1 } }
     ]
   },
   {
-    text: "أقرب وصف لطريقتك في اتخاذ القرار هو...",
+    section: "mental",
+    text: "كيف ترى نفسك بشكل عام؟",
     options: [
-      { label: "أجمع المعلومات أولًا", sub: "أحتاج وضوحًا قبل الحسم.", weight: { structured: 2, calm: 1 } },
-      { label: "أحسم بسرعة إذا شعرت أنه مناسب", sub: "أفضل الحركة على التردد.", weight: { decisive: 2 } },
-      { label: "أتبع إحساسي وحدسي", sub: "أثق في الإلهام أحيانًا.", weight: { creative: 1, calm: 1 } },
-      { label: "أفكر في أثر القرار على الناس", sub: "أراعي الآخرين.", weight: { empathetic: 2, social: 1 } }
+      { label: "أفهم نفسي بشكل واضح", sub: "لدي صورة جيدة عن ذاتي.", weight: { mental: 4 } },
+      { label: "أفهم نفسي في بعض الجوانب", sub: "بعض الأمور واضحة وبعضها لا.", weight: { mental: 3 } },
+      { label: "أشعر أنني بحاجة لفهم نفسي أكثر", sub: "لا تزال الصورة ناقصة.", weight: { mental: 2 } },
+      { label: "لا أفهم نفسي بشكل جيد", sub: "أجد صعوبة في معرفة ذاتي.", weight: { mental: 1 } }
     ]
   },
   {
-    text: "عندما تتعرض لضغط مفاجئ، كيف يكون رد فعلك؟",
+    section: "mental",
+    text: "عندما تشعر بمشاعر متضاربة، ماذا تفعل؟",
     options: [
-      { label: "أرتب ما يحدث في ذهني", sub: "أحتاج أستعيد النظام.", weight: { calm: 2, structured: 1 } },
-      { label: "أتحرك بسرعة لحل الوضع", sub: "لا أحب الجمود وقت الضغط.", weight: { decisive: 2, ambitious: 1 } },
-      { label: "أبحث عن حل غير تقليدي", sub: "أميل للمرونة والذكاء.", weight: { creative: 2 } },
-      { label: "أهتم أولًا بحالة من حولي", sub: "الناس لا تقل أهمية عن المشكلة.", weight: { empathetic: 2, social: 1 } }
+      { label: "أحاول فهم كل شعور على حدة", sub: "أحلل ما أشعر به.", weight: { mental: 4 } },
+      { label: "أتجاهل الأمر", sub: "أفضل عدم الدخول في التفاصيل.", weight: { mental: 3 } },
+      { label: "أشعر بالحيرة", sub: "يصعب علي ترتيب ما أشعر به.", weight: { mental: 2 } },
+      { label: "أترك نفسي للمشاعر دون ضبط", sub: "أستسلم لما يحدث داخلي.", weight: { mental: 1 } }
     ]
   },
   {
-    text: "في العمل أو الدراسة، ما الذي يحفزك أكثر؟",
+    section: "mental",
+    text: "إذا وجه لك أحدهم نقدًا، كيف تتعامل معه؟",
     options: [
-      { label: "النظام والوضوح", sub: "أحب أن أعرف ما المطلوب.", weight: { structured: 2 } },
-      { label: "النجاح والتقدم", sub: "أتحفز بالنتائج والطموح.", weight: { ambitious: 2, decisive: 1 } },
-      { label: "المساحة للتجريب", sub: "أحتاج مساحة للتعبير.", weight: { creative: 2 } },
-      { label: "العمل مع ناس متفاهمين", sub: "الجو الإنساني مهم.", weight: { social: 1, empathetic: 2 } }
+      { label: "أفكر في كلامه وأقيّمه", sub: "أزن النقد بهدوء.", weight: { mental: 4 } },
+      { label: "أنزعج قليلًا ثم أراجعه", sub: "أحتاج وقتًا قبل التقبل.", weight: { mental: 3 } },
+      { label: "أرفضه مباشرة", sub: "أميل للدفاع السريع عن نفسي.", weight: { mental: 2 } },
+      { label: "أتضايق بشدة ولا أتقبله", sub: "أشعر بصعوبة في استقباله.", weight: { mental: 1 } }
     ]
   },
   {
-    text: "أي نوع من الأصدقاء يميل لك أكثر؟",
+    section: "mental",
+    text: "عندما تشعر بالحزن أو القلق، كيف تتعامل؟",
     options: [
-      { label: "الملتزم والواضح", sub: "أرتاح للشخص المنظم.", weight: { structured: 2 } },
-      { label: "القوي والطموح", sub: "يعجبني الحضور الواثق.", weight: { ambitious: 2, decisive: 1 } },
-      { label: "المرح والمختلف", sub: "أحب الشخصيات الملهمة.", weight: { creative: 2, social: 1 } },
-      { label: "الحنون والمتفهم", sub: "القرب الإنساني يهمني.", weight: { empathetic: 2 } }
+      { label: "أواجه مشاعري وأحاول فهمها", sub: "أتعامل معها بوعي.", weight: { mental: 4 } },
+      { label: "أتجاهلها وأستمر", sub: "أؤجل الالتفات لها.", weight: { mental: 3 } },
+      { label: "أشتكي دون حل", sub: "أعبر لكن دون خطوات واضحة.", weight: { mental: 2 } },
+      { label: "أتركها تتفاقم", sub: "لا أعرف كيف أوقفها.", weight: { mental: 1 } }
     ]
   },
   {
-    text: "كيف تتعامل مع رسالة متأخرة أو تجاهل من شخص مهم لك؟",
+    section: "mental",
+    text: "هل لديك طريقة واضحة لاستعادة توازنك النفسي؟",
     options: [
-      { label: "أحلل السبب بهدوء", sub: "أفضل عدم التسرع.", weight: { calm: 2, structured: 1 } },
-      { label: "أواجه الأمر مباشرة", sub: "أحب الوضوح السريع.", weight: { decisive: 2 } },
-      { label: "أشغل نفسي بشيء آخر", sub: "أتجاوز بالتغيير.", weight: { creative: 1, calm: 1 } },
-      { label: "أفكر هل الشخص يمر بشيء صعب", sub: "أميل للتفهم أولًا.", weight: { empathetic: 2 } }
+      { label: "نعم، لدي طريقة واضحة", sub: "أعرف ما يفيدني غالبًا.", weight: { mental: 4 } },
+      { label: "لدي بعض المحاولات", sub: "أملك بدايات لكنها غير ثابتة.", weight: { mental: 3 } },
+      { label: "أجرب طرقًا مختلفة كل مرة", sub: "لا يوجد أسلوب محدد.", weight: { mental: 2 } },
+      { label: "لا توجد طريقة لدي", sub: "أحتاج لاكتشاف ما يناسبني.", weight: { mental: 1 } }
     ]
   },
   {
-    text: "أنت في الغالب تميل إلى...",
+    section: "mental",
+    text: "كيف تصف علاقتك بنفسك؟",
     options: [
-      { label: "الاستقرار والوضوح", sub: "أفضل الأشياء المرتبة.", weight: { structured: 2, calm: 1 } },
-      { label: "التحدي والتقدم", sub: "أحب الشعور بالنمو.", weight: { ambitious: 2 } },
-      { label: "التجديد والاختلاف", sub: "أمل من التكرار سريعًا.", weight: { creative: 2 } },
-      { label: "الدفء الإنساني والقرب", sub: "أحب العلاقات العميقة.", weight: { empathetic: 2, social: 1 } }
+      { label: "متوازنة ومريحة", sub: "أشعر بانسجام داخلي جيد.", weight: { mental: 4 } },
+      { label: "جيدة لكنها غير ثابتة", sub: "فيها جوانب جيدة وتقلبات.", weight: { mental: 3 } },
+      { label: "مضطربة نوعًا ما", sub: "أحتاج توازنًا أكبر.", weight: { mental: 2 } },
+      { label: "مرهقة وصعبة", sub: "أعاني في علاقتي بذاتي.", weight: { mental: 1 } }
+    ]
+  },
+
+  // القسم الثاني
+  {
+    section: "social",
+    text: "عند الحديث مع الآخرين، على ماذا تركز أكثر؟",
+    options: [
+      { label: "أفهم كلامهم ومشاعرهم", sub: "أركز على المعنى والإحساس.", weight: { social: 4 } },
+      { label: "أفكر في ردي", sub: "أهتم بما سأقوله بعد قليل.", weight: { social: 3 } },
+      { label: "أركز على رأيي فقط", sub: "الأهم عندي ما أراه أنا.", weight: { social: 2 } },
+      { label: "لا أركز كثيرًا", sub: "ينصرف انتباهي بسهولة.", weight: { social: 1 } }
     ]
   },
   {
-    text: "إذا كان لديك وقت فراغ، ماذا تميل أن تفعل؟",
+    section: "social",
+    text: "إذا كان شخص يشاركك مشكلة، كيف تتصرف؟",
     options: [
-      { label: "أرتب أموري أو أخطط", sub: "الترتيب يريحني.", weight: { structured: 2 } },
-      { label: "أعمل على هدف مؤجل", sub: "أحب استغلال الوقت.", weight: { ambitious: 2, decisive: 1 } },
-      { label: "أجرب فكرة جديدة", sub: "أحتاج كسر الروتين.", weight: { creative: 2 } },
-      { label: "أتواصل مع شخص قريب", sub: "الناس جزء مهم من راحتي.", weight: { social: 2, empathetic: 1 } }
+      { label: "أستمع جيدًا أولًا", sub: "أمنحه مساحة للكلام.", weight: { social: 4 } },
+      { label: "أقدم نصيحة مباشرة", sub: "أميل للحلول السريعة.", weight: { social: 3 } },
+      { label: "أغير الموضوع", sub: "أشعر بعدم الارتياح للموقف.", weight: { social: 2 } },
+      { label: "لا أهتم كثيرًا", sub: "لا أتفاعل بالشكل الكافي.", weight: { social: 1 } }
     ]
   },
   {
-    text: "كيف يراك الآخرون غالبًا في أول انطباع؟",
+    section: "social",
+    text: "إذا شعرت أن شخصًا أزعجك، ماذا تفعل؟",
     options: [
-      { label: "هادئ ومرتب", sub: "تعطي إحساسًا بالثبات.", weight: { calm: 2, structured: 1 } },
-      { label: "واثق وواضح", sub: "حضورك مباشر.", weight: { decisive: 2, ambitious: 1 } },
-      { label: "مختلف ولافت", sub: "فيك شيء غير تقليدي.", weight: { creative: 2 } },
-      { label: "لطيف ومريح", sub: "وجودك يبعث راحة.", weight: { empathetic: 2, social: 1 } }
+      { label: "أتحدث معه بهدوء", sub: "أفضل المواجهة المحترمة.", weight: { social: 4 } },
+      { label: "أزعل وأصمت", sub: "أحتفظ بما أشعر به داخليًا.", weight: { social: 3 } },
+      { label: "أبتعد عنه", sub: "أفضل الانسحاب من الموقف.", weight: { social: 2 } },
+      { label: "أتصرف بعصبية", sub: "أنفعل سريعًا عند الضيق.", weight: { social: 1 } }
     ]
   },
   {
-    text: "عندما تخطط لشيء مهم، ما أول ما تفكر فيه؟",
+    section: "social",
+    text: "عند الاختلاف مع شخص، كيف تتصرف؟",
     options: [
-      { label: "الخطوات", sub: "أحتاج ترتيب التنفيذ.", weight: { structured: 2 } },
-      { label: "النتيجة", sub: "يهمني الوصول بسرعة.", weight: { ambitious: 2, decisive: 1 } },
-      { label: "اللمسة المختلفة", sub: "أحب أن يكون الشيء مميزًا.", weight: { creative: 2 } },
-      { label: "تأثيره على الناس", sub: "أهتم بردود الفعل والانطباع.", weight: { empathetic: 2, social: 1 } }
+      { label: "أناقش باحترام", sub: "أحاول الحفاظ على الهدوء.", weight: { social: 4 } },
+      { label: "أتمسك برأيي", sub: "أدافع عن موقفي بقوة.", weight: { social: 3 } },
+      { label: "أتجنب النقاش", sub: "أفضل عدم الدخول في الخلاف.", weight: { social: 2 } },
+      { label: "يتحول الأمر إلى شجار", sub: "يصعب علي ضبط الموقف.", weight: { social: 1 } }
     ]
   },
   {
-    text: "في نقاش حاد، ماذا تفعل غالبًا؟",
+    section: "social",
+    text: "كيف هي حدودك مع الآخرين؟",
     options: [
-      { label: "أهدأ وأرتب الكلام", sub: "أفضل ألا أنفعل.", weight: { calm: 2, structured: 1 } },
-      { label: "أقول موقفي بوضوح", sub: "لا أحب الدوران.", weight: { decisive: 2 } },
-      { label: "أغير زاوية الحديث", sub: "أبحث عن مدخل مختلف.", weight: { creative: 2 } },
-      { label: "أحاول تخفيف التوتر", sub: "أهتم بالمناخ العام.", weight: { empathetic: 2 } }
+      { label: "واضحة جدًا", sub: "أعرف ما أقبله وما لا أقبله.", weight: { social: 4 } },
+      { label: "واضحة أحيانًا", sub: "لكن ليس في كل المواقف.", weight: { social: 3 } },
+      { label: "غير واضحة", sub: "أرتبك أحيانًا في التعبير عنها.", weight: { social: 2 } },
+      { label: "لا أضع حدودًا", sub: "أترك الأمور تسير دون ضبط.", weight: { social: 1 } }
     ]
   },
   {
-    text: "أي بيئة تناسبك أكثر؟",
+    section: "social",
+    text: "إذا أخطأت في حق أحد، ماذا تفعل؟",
     options: [
-      { label: "بيئة واضحة القواعد", sub: "أفضل الوضوح.", weight: { structured: 2 } },
-      { label: "بيئة فيها تحديات وسرعة", sub: "أحب الإيقاع العالي.", weight: { decisive: 2, ambitious: 1 } },
-      { label: "بيئة مرنة ومبدعة", sub: "التنوع يخرج أفضل ما عندي.", weight: { creative: 2 } },
-      { label: "بيئة إنسانية ومتعاونة", sub: "أحب الجو المريح.", weight: { social: 1, empathetic: 2 } }
+      { label: "أبادر بالإصلاح فورًا", sub: "أرى الاعتذار والتصحيح مهمين.", weight: { social: 4 } },
+      { label: "أصلح بعد فترة", sub: "أحتاج وقتًا قبل المبادرة.", weight: { social: 3 } },
+      { label: "أتجاهل الأمر", sub: "أميل لتركه دون مواجهة.", weight: { social: 2 } },
+      { label: "أتركه دون حل", sub: "لا أتحرك عادة لإصلاحه.", weight: { social: 1 } }
     ]
   },
   {
-    text: "ما الذي يضايقك أكثر؟",
+    section: "social",
+    text: "كيف تفهم مشاعر الآخرين؟",
     options: [
-      { label: "العشوائية", sub: "أحتاج وضوحًا.", weight: { structured: 2 } },
-      { label: "البطء الشديد", sub: "أفضل الحسم.", weight: { decisive: 2, ambitious: 1 } },
-      { label: "التكرار الممل", sub: "أحتاج تجديدًا.", weight: { creative: 2 } },
-      { label: "سوء المعاملة", sub: "الأذى الإنساني يزعجني.", weight: { empathetic: 2 } }
+      { label: "بسهولة", sub: "ألتقط الإشارات بسرعة.", weight: { social: 4 } },
+      { label: "أحيانًا", sub: "أفهم في بعض المواقف فقط.", weight: { social: 3 } },
+      { label: "بصعوبة", sub: "أحتاج انتباهًا أكبر.", weight: { social: 2 } },
+      { label: "لا أفهمها غالبًا", sub: "يصعب علي قراءة المشاعر.", weight: { social: 1 } }
     ]
   },
   {
-    text: "عندما تنجح في شيء مهم، ما أكثر شيء يسعدك؟",
+    section: "social",
+    text: "هل تغير أسلوبك حسب الشخص الذي تتعامل معه؟",
     options: [
-      { label: "أن كل شيء سار كما خططت", sub: "نجاح النظام يرضيني.", weight: { structured: 2 } },
-      { label: "أنني وصلت لهدفي", sub: "الإنجاز نفسه يفرحني.", weight: { ambitious: 2, decisive: 1 } },
-      { label: "أن النتيجة كانت مختلفة", sub: "أحب التميز.", weight: { creative: 2 } },
-      { label: "أن الناس قدرت ما فعلته", sub: "الأثر الإنساني مهم.", weight: { social: 1, empathetic: 2 } }
+      { label: "نعم بشكل واضح", sub: "أراعي الفروق بين الناس.", weight: { social: 4 } },
+      { label: "أحيانًا", sub: "أفعل ذلك في بعض العلاقات.", weight: { social: 3 } },
+      { label: "نادرًا", sub: "لا أغير أسلوبي كثيرًا.", weight: { social: 2 } },
+      { label: "لا، أتعامل بنفس الطريقة", sub: "أستخدم أسلوبًا واحدًا غالبًا.", weight: { social: 1 } }
     ]
   },
   {
-    text: "أي عبارة أقرب لك؟",
+    section: "social",
+    text: "إذا تم انتقادك، كيف يكون ردك؟",
     options: [
-      { label: "أحب أن أفهم قبل أن أتحرك", sub: "الفهم يسبق القرار.", weight: { structured: 2, calm: 1 } },
-      { label: "أحب أن أتحرك قبل أن تضيع الفرصة", sub: "الحركة أفضل من الانتظار.", weight: { decisive: 2, ambitious: 1 } },
-      { label: "أحب أن أرى الاحتمالات المختلفة", sub: "أفكر خارج الشكل التقليدي.", weight: { creative: 2 } },
-      { label: "أحب أن أبقي الأمور لطيفة ومتزنة", sub: "الهدوء مهم عندي.", weight: { empathetic: 2, calm: 1 } }
+      { label: "أستمع وأفكر", sub: "أراجع الموقف بهدوء.", weight: { social: 4 } },
+      { label: "أنزعج قليلًا", sub: "أتأثر لكن أهدأ لاحقًا.", weight: { social: 3 } },
+      { label: "أرفض النقد", sub: "لا أتقبله بسهولة.", weight: { social: 2 } },
+      { label: "أهاجم الطرف الآخر", sub: "أرد بانفعال واضح.", weight: { social: 1 } }
     ]
   },
   {
-    text: "كيف تتعامل مع يوم سيئ؟",
+    section: "social",
+    text: "كيف تصف علاقاتك بشكل عام؟",
     options: [
-      { label: "أرجع للنظام والروتين", sub: "الترتيب يهدئني.", weight: { calm: 2, structured: 1 } },
-      { label: "أحاول إصلاحه بسرعة", sub: "لا أحب أن يضيع اليوم.", weight: { decisive: 2, ambitious: 1 } },
-      { label: "أكسر الجو بشيء جديد", sub: "أغير المود بالفعل المختلف.", weight: { creative: 2 } },
-      { label: "ألجأ لشخص أثق به", sub: "الدعم الإنساني يفرق معي.", weight: { social: 1, empathetic: 2 } }
+      { label: "متوازنة", sub: "أشعر باستقرار جيد في علاقاتي.", weight: { social: 4 } },
+      { label: "جيدة", sub: "فيها جوانب إيجابية واضحة.", weight: { social: 3 } },
+      { label: "غير مستقرة", sub: "فيها تقلبات ملحوظة.", weight: { social: 2 } },
+      { label: "مرهقة", sub: "أجدها مستنزفة أو معقدة.", weight: { social: 1 } }
+    ]
+  },
+
+  // القسم الثالث
+  {
+    section: "religious",
+    text: "إذا واجهت أمرًا لا تعرف حكمه، ماذا تفعل؟",
+    options: [
+      { label: "أبحث أو أسأل من مصدر موثوق", sub: "أحرص على التثبت أولًا.", weight: { religious: 4 } },
+      { label: "أسأل إذا كان الأمر مهمًا", sub: "أتحرى أحيانًا بحسب الموقف.", weight: { religious: 3 } },
+      { label: "أتصرف دون سؤال", sub: "لا أراجع الأمر غالبًا.", weight: { religious: 2 } },
+      { label: "أتجاهل الأمر", sub: "لا أعطيه اهتمامًا كافيًا.", weight: { religious: 1 } }
     ]
   },
   {
-    text: "ماذا يعجبك في الناس أكثر؟",
+    section: "religious",
+    text: "كيف هي علاقتك بتعلم أمور دينك؟",
     options: [
-      { label: "الالتزام", sub: "أحترم الوضوح والمسؤولية.", weight: { structured: 2 } },
-      { label: "القوة والطموح", sub: "أحب الشخص المتحرك للأمام.", weight: { ambitious: 2, decisive: 1 } },
-      { label: "الذكاء والاختلاف", sub: "أميل للمميز.", weight: { creative: 2 } },
-      { label: "الطيبة والاحتواء", sub: "أحب القلب الهادئ.", weight: { empathetic: 2 } }
+      { label: "منتظمة ومستمرّة", sub: "أحرص على التعلم بصورة ثابتة.", weight: { religious: 4 } },
+      { label: "أحاول بقدر استطاعتي", sub: "لدي محاولات جيدة ولكنها ليست ثابتة.", weight: { religious: 3 } },
+      { label: "قليلة", sub: "أتعلم على فترات متباعدة.", weight: { religious: 2 } },
+      { label: "شبه معدومة", sub: "لا يوجد اهتمام منتظم حاليًا.", weight: { religious: 1 } }
     ]
   },
   {
-    text: "في العلاقات، ما الذي تحتاجه أكثر؟",
+    section: "religious",
+    text: "عند سماع معلومة دينية، ماذا تفعل؟",
     options: [
-      { label: "الوضوح والاستقرار", sub: "أحتاج شيئًا مفهومًا.", weight: { structured: 2, calm: 1 } },
-      { label: "الاحترام والدعم", sub: "أحب علاقة تدفعني للأمام.", weight: { ambitious: 2, decisive: 1 } },
-      { label: "التجدد والاهتمام", sub: "أحب الحيوية والتفاصيل.", weight: { creative: 2, social: 1 } },
-      { label: "الأمان والاحتواء", sub: "أحتاج قربًا صادقًا.", weight: { empathetic: 2 } }
+      { label: "أتحقق منها", sub: "لا أنقلها قبل التأكد.", weight: { religious: 4 } },
+      { label: "أتحقق أحيانًا", sub: "بحسب المصدر أو الظرف.", weight: { religious: 3 } },
+      { label: "أنقلها دون تأكد", sub: "أكتفي غالبًا بما سمعته.", weight: { religious: 2 } },
+      { label: "لا أهتم", sub: "لا أتوقف كثيرًا عند التحقق.", weight: { religious: 1 } }
     ]
   },
   {
-    text: "إذا أخطأ شخص في حقك، ما الأقرب لك؟",
+    section: "religious",
+    text: "إلى أي مدى تفهم ما تقوم به من عبادات؟",
     options: [
-      { label: "أفكر بهدوء قبل الرد", sub: "لا أحب التسرع.", weight: { calm: 2 } },
-      { label: "أوضح الخطأ مباشرة", sub: "أفضل الوضوح.", weight: { decisive: 2 } },
-      { label: "أحاول فهم السياق أولًا", sub: "أميل لرؤية الصورة كاملة.", weight: { creative: 1, empathetic: 1 } },
-      { label: "أهتم إذا كان ذلك مقصودًا أم لا", sub: "نية الشخص تهمني.", weight: { empathetic: 2 } }
+      { label: "أفهم بشكل واضح", sub: "أعرف المعاني والأحكام الأساسية.", weight: { religious: 4 } },
+      { label: "أفهم جزءًا منها", sub: "بعض الجوانب واضحة وبعضها لا.", weight: { religious: 3 } },
+      { label: "فهمي محدود", sub: "أحتاج لتعلم أكثر.", weight: { religious: 2 } },
+      { label: "لا أفهمها جيدًا", sub: "أحتاج للبدء بشكل أوضح.", weight: { religious: 1 } }
     ]
   },
   {
-    text: "أي دور تميل له داخل المجموعة؟",
+    section: "religious",
+    text: "إذا شعرت بتقصير ديني، كيف تتصرف؟",
     options: [
-      { label: "المنظم", sub: "أرتاح في الترتيب.", weight: { structured: 2 } },
-      { label: "القائد", sub: "أحب التوجيه.", weight: { decisive: 2, ambitious: 1 } },
-      { label: "صاحب الفكرة", sub: "أميل للابتكار.", weight: { creative: 2 } },
-      { label: "المهدئ والداعم", sub: "أهتم بتوازن الناس.", weight: { social: 1, empathetic: 2 } }
+      { label: "أحاول الإصلاح مباشرة", sub: "أربط الشعور بالفعل.", weight: { religious: 4 } },
+      { label: "أفكر في ذلك فقط", sub: "أشعر بالتقصير لكن دون خطوات كافية.", weight: { religious: 3 } },
+      { label: "أتجاهل الأمر", sub: "لا أتعامل معه بوضوح.", weight: { religious: 2 } },
+      { label: "أترك نفسي دون تغيير", sub: "لا يحدث تحرك عملي.", weight: { religious: 1 } }
     ]
   },
   {
-    text: "لو عندك هدف كبير، كيف تتعامل معه؟",
+    section: "religious",
+    text: "من أين تتلقى معلوماتك الدينية غالبًا؟",
     options: [
-      { label: "أحوله لخطة مراحل", sub: "أفضل التدرج.", weight: { structured: 2 } },
-      { label: "أطارد النتيجة بقوة", sub: "الطموح يحركني.", weight: { ambitious: 2, decisive: 1 } },
-      { label: "أبحث عن طريق مختلف لتحقيقه", sub: "أحب الحلول الجديدة.", weight: { creative: 2 } },
-      { label: "أحب وجود من يشجعني فيه", sub: "الدعم الإنساني مهم.", weight: { social: 1, empathetic: 2 } }
+      { label: "مصادر موثوقة", sub: "أرجع لأهل العلم أو مصادر معروفة.", weight: { religious: 4 } },
+      { label: "أشخاص حولي", sub: "أعتمد على من أثق بهم غالبًا.", weight: { religious: 3 } },
+      { label: "وسائل التواصل", sub: "أتعلم مما يصلني عبر المنصات.", weight: { religious: 2 } },
+      { label: "بشكل عشوائي", sub: "لا يوجد مصدر محدد أو منهج واضح.", weight: { religious: 1 } }
     ]
   },
   {
-    text: "كيف تقضي وقتك على الهاتف غالبًا؟",
+    section: "religious",
+    text: "هل لديك وقت مخصص لتعلم دينك؟",
     options: [
-      { label: "تنظيم، قراءة، متابعة أشياء مفيدة", sub: "أبحث عن قيمة واضحة.", weight: { structured: 2 } },
-      { label: "متابعة أهداف وأخبار وتقدم", sub: "أميل للحركة والتقدم.", weight: { ambitious: 2 } },
-      { label: "إلهام، أفكار، محتوى مختلف", sub: "أحب المحتوى الذي يفتح آفاقًا.", weight: { creative: 2 } },
-      { label: "محادثات وتواصل وعلاقات", sub: "التواصل جزء أساسي عندي.", weight: { social: 2, empathetic: 1 } }
+      { label: "نعم بشكل منتظم", sub: "ولو كان يسيرًا لكنه مستمر.", weight: { religious: 4 } },
+      { label: "أحيانًا", sub: "بحسب الفراغ والظروف.", weight: { religious: 3 } },
+      { label: "نادرًا", sub: "لا يحدث إلا قليلًا.", weight: { religious: 2 } },
+      { label: "لا", sub: "لا يوجد وقت مخصص حاليًا.", weight: { religious: 1 } }
     ]
   },
   {
-    text: "عندما تفكر في نفسك، ما أكثر شيء تلاحظه؟",
+    section: "religious",
+    text: "هل يؤثر فهمك الديني على سلوكك اليومي؟",
     options: [
-      { label: "أني أحب النظام والوضوح", sub: "أرتاح للهيكلة.", weight: { structured: 2 } },
-      { label: "أني أريد أن أتقدم دائمًا", sub: "الطموح حاضر بقوة.", weight: { ambitious: 2 } },
-      { label: "أني أمل بسرعة من التكرار", sub: "أحتاج مساحة إبداع.", weight: { creative: 2 } },
-      { label: "أني أتأثر بالمواقف الإنسانية", sub: "قلبي حاضر في قراراتي.", weight: { empathetic: 2 } }
+      { label: "بشكل واضح", sub: "أحاول أن ينعكس على أفعالي.", weight: { religious: 4 } },
+      { label: "أحيانًا", sub: "يظهر في بعض المواقف دون بعض.", weight: { religious: 3 } },
+      { label: "تأثير محدود", sub: "لا يزال الأثر العملي ضعيفًا.", weight: { religious: 2 } },
+      { label: "لا يؤثر", sub: "لا أرى أثرًا واضحًا في السلوك.", weight: { religious: 1 } }
     ]
   },
   {
-    text: "أي نوع من القرارات أصعب عليك؟",
+    section: "religious",
+    text: "هل تستطيع التمييز بين الصحيح والخاطئ دينيًا؟",
     options: [
-      { label: "قرار غير واضح التفاصيل", sub: "الغموض يربكني.", weight: { structured: 2 } },
-      { label: "قرار يؤخر هدفي", sub: "أكره التعطل.", weight: { ambitious: 2, decisive: 1 } },
-      { label: "قرار يغلق بابًا جديدًا", sub: "لا أحب فقدان الاحتمالات.", weight: { creative: 2 } },
-      { label: "قرار قد يجرح أحدًا", sub: "أراعي الأثر على الناس.", weight: { empathetic: 2 } }
+      { label: "بوضوح", sub: "في كثير من الأمور الأساسية.", weight: { religious: 4 } },
+      { label: "إلى حد ما", sub: "في بعض الجوانب دون بعض.", weight: { religious: 3 } },
+      { label: "أحتاج تعلمًا أكثر", sub: "لا يزال عندي نقص في الفهم.", weight: { religious: 2 } },
+      { label: "لا أستطيع", sub: "الصورة غير واضحة عندي.", weight: { religious: 1 } }
     ]
   },
   {
-    text: "عندما تتخيل مستقبلك، ما الصورة الأقرب؟",
+    section: "religious",
+    text: "كيف ترى مستواك في فهم دينك؟",
     options: [
-      { label: "حياة مستقرة وواضحة", sub: "الهدوء والاتزان يهماني.", weight: { calm: 2, structured: 1 } },
-      { label: "إنجازات ومكانة قوية", sub: "أحب الوصول والتأثير.", weight: { ambitious: 2, decisive: 1 } },
-      { label: "حياة فيها حرية وتجارب", sub: "أميل للتنوع والاكتشاف.", weight: { creative: 2 } },
-      { label: "حياة فيها قرب وعلاقات صادقة", sub: "الدفء الإنساني أساسي.", weight: { social: 1, empathetic: 2 } }
-    ]
-  },
-  {
-    text: "إذا قال عنك أحدهم إنك...",
-    options: [
-      { label: "منظم جدًا", sub: "ستعتبرها صفة جيدة.", weight: { structured: 2 } },
-      { label: "طموح جدًا", sub: "ستشعر أنها تعبر عنك.", weight: { ambitious: 2 } },
-      { label: "مختلف جدًا", sub: "ستحب هذا الوصف.", weight: { creative: 2 } },
-      { label: "حنون جدًا", sub: "ستراه قريبًا منك.", weight: { empathetic: 2 } }
-    ]
-  },
-  {
-    text: "ما الذي يمثل لك الراحة أكثر؟",
-    options: [
-      { label: "أن أعرف ما الذي سيحدث", sub: "الوضوح راحة بالنسبة لي.", weight: { calm: 2, structured: 1 } },
-      { label: "أن أشعر أني أتقدم", sub: "التقدم يعطيني طمأنينة.", weight: { ambitious: 2 } },
-      { label: "أن أكون على طبيعتي", sub: "الحرية والإبداع يريحانني.", weight: { creative: 2 } },
-      { label: "أن أكون مع أشخاص آمنين", sub: "الراحة عندي مرتبطة بالعلاقات.", weight: { social: 1, empathetic: 2 } }
+      { label: "لدي أساس جيد", sub: "وأعرف ما أحتاج أن أتعلمه لاحقًا.", weight: { religious: 4 } },
+      { label: "متوسط", sub: "لدي أساس لكن يحتاج تقوية.", weight: { religious: 3 } },
+      { label: "ضعيف", sub: "أحتاج مزيدًا من البناء والتعلم.", weight: { religious: 2 } },
+      { label: "أحتاج أن أبدأ من البداية", sub: "أحتاج خطة أوضح وأبسط.", weight: { religious: 1 } }
     ]
   }
 ];
 
+const sectionStartIndexes = {
+  0: "القسم الأول: مستوى الوعي الذاتي الصحي",
+  10: "القسم الثاني: مستوى الوعي الذاتي الاجتماعي",
+  20: "القسم الثالث: مستوى التفقه الديني"
+};
+
 const introStep = {
   type: "intro",
-  text: "مرحبًا بك 🌿 قبل أن نبدأ، ما الاسم الذي تحب أن يظهر في النتيجة؟"
+  text: "مرحبًا بك 🌷 قبل أن نبدأ، ما الاسم الذي تحب أن يظهر في النتيجة؟"
 };
 
 const chatBody = document.getElementById("chatBody");
@@ -308,11 +348,49 @@ const statQuestions = document.getElementById("statQuestions");
 
 statQuestions.textContent = `${questions.length} سؤال`;
 
+function showQuizPage() {
+  homePage.classList.add("hidden");
+  quizPage.classList.remove("hidden");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  if (currentStep === 0 && !userName) {
+    renderIntro();
+  }
+}
+
+function showHomePage() {
+  quizPage.classList.add("hidden");
+  homePage.classList.remove("hidden");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+startQuizBtn.addEventListener("click", showQuizPage);
+startFromHeroBtn.addEventListener("click", showQuizPage);
+backHomeBtn.addEventListener("click", showHomePage);
+
+learnMoreBtn.addEventListener("click", () => {
+  sectionsPreview.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+scrollToSectionsBtn.addEventListener("click", () => {
+  sectionsPreview.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
 function appendMessage(text, sender = "bot") {
   const msg = document.createElement("div");
   msg.className = `message ${sender}`;
   msg.innerHTML = `<div class="bubble">${text}</div>`;
   chatBody.appendChild(msg);
+}
+
+function appendSectionBanner(text) {
+  const wrap = document.createElement("div");
+  wrap.className = "section-banner";
+  wrap.innerHTML = `
+    <div class="section-banner-badge">عنوان القسم</div>
+    <h3>${text}</h3>
+    <p>أجب بهدوء واختر الإجابة الأقرب إليك من الخيارات التالية.</p>
+  `;
+  chatBody.appendChild(wrap);
 }
 
 function updateProgress() {
@@ -349,8 +427,8 @@ function renderIntro() {
     <strong>اكتب اسمك للبدء</strong>
     <span>سيظهر الاسم في النتيجة النهائية فقط</span>
     <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
-      <input id="nameInput" type="text" placeholder="مثال: محمد" style="flex:1;min-width:220px;padding:14px;border:1px solid rgba(20,107,73,.15);border-radius:14px;font:inherit;outline:none;">
-      <button id="startBtn" style="border:none;border-radius:14px;padding:14px 20px;background:linear-gradient(135deg,#198754,#0f4d35);color:#fff;font:inherit;font-weight:700;cursor:pointer;">ابدأ</button>
+      <input id="nameInput" type="text" placeholder="مثال: محمد" style="flex:1;min-width:220px;padding:14px;border:1px solid rgba(79,23,35,.15);border-radius:14px;font:inherit;outline:none;background:#fff;">
+      <button id="startBtn" style="border:none;border-radius:14px;padding:14px 20px;background:linear-gradient(135deg,#6e2132,#4f1723);color:#fff;font:inherit;font-weight:700;cursor:pointer;">ابدأ</button>
     </div>
   `;
   wrap.appendChild(card);
@@ -380,9 +458,12 @@ function renderIntro() {
 
 function renderQuestion() {
   chatBody.innerHTML = "";
-  appendMessage(`أهلًا ${escapeHtml(userName)} 🌿 سنبدأ الآن الاستبيان. اختر إجابة واحدة فقط في كل سؤال.`, "bot");
+  appendMessage(`أهلًا ${escapeHtml(userName)} 🌷 سنبدأ الآن الاستبيان. اختر إجابة واحدة فقط في كل سؤال.`, "bot");
 
   for (let i = 0; i < currentStep - 1; i++) {
+    if (sectionStartIndexes[i]) {
+      appendSectionBanner(sectionStartIndexes[i]);
+    }
     appendMessage(questions[i].text, "bot");
     appendMessage(questions[i].selectedLabel, "user");
   }
@@ -397,7 +478,13 @@ function renderQuestion() {
     return;
   }
 
-  const q = questions[currentStep - 1];
+  const qIndex = currentStep - 1;
+  const q = questions[qIndex];
+
+  if (sectionStartIndexes[qIndex]) {
+    appendSectionBanner(sectionStartIndexes[qIndex]);
+  }
+
   appendMessage(q.text, "bot");
 
   const choices = document.createElement("div");
@@ -440,106 +527,98 @@ function selectAnswer(option, button) {
   setTimeout(() => {
     currentStep += 1;
     renderQuestion();
-  }, 160);
+  }, 180);
 }
 
-function getTopDimensions() {
-  return Object.entries(scores).sort((a, b) => b[1] - a[1]);
+function getSectionPercentage(key) {
+  const maxScore = 40;
+  return Math.round((scores[key] / maxScore) * 100);
 }
 
-function pickArchetype(sortedDims) {
-  const top = sortedDims[0][0];
-  const second = sortedDims[1][0];
-  const diff = sortedDims[0][1] - sortedDims[1][1];
-
-  if (diff <= 1) return "balanced";
-  if (top === "structured" || top === "calm") return "analyst";
-  if (top === "ambitious" || top === "decisive") return "driver";
-  if (top === "creative") return "creator";
-  if (top === "empathetic" || top === "social") return "connector";
-  return "balanced";
+function getSectionLevel(percentage) {
+  if (percentage >= 80) return "مرتفع";
+  if (percentage >= 60) return "جيد";
+  if (percentage >= 40) return "متوسط";
+  return "يحتاج إلى دعم";
 }
 
-const archetypes = {
-  analyst: {
-    title: "الشخصية الهادئة التحليلية",
-    summary: "تميل إلى الوضوح والترتيب والتفكير قبل التحرك. لديك ميل طبيعي لفهم الصورة بهدوء وبناء قراراتك على أساس منطقي ومتزن.",
-    style: "تبدو أفضل عندما يكون لديك مسار واضح وخطوات مفهومة، وتميل إلى الجودة والثبات أكثر من الاندفاع السريع.",
-    strengths: ["الهدوء", "التفكير المنظم", "ملاحظة التفاصيل", "التصرف المتزن"],
-    watchouts: ["قد تؤجل بعض القرارات انتظارًا لوضوح أكبر", "قد تتوتر من الفوضى أو التغيير المفاجئ"],
-    advice: "اسمح لنفسك أحيانًا بخطوة أسرع حتى لو لم تكن كل التفاصيل مكتملة."
-  },
-  driver: {
-    title: "الشخصية الطموحة الحاسمة",
-    summary: "لديك طاقة واضحة نحو التقدم والإنجاز، وتميل إلى الحسم عندما ترى هدفًا أمامك. حضورك يحمل رغبة في الحركة والتأثير.",
-    style: "تناسبك البيئات التي فيها تحدٍّ ونتائج وفرص تقدم، وتظهر أفضل صفاتك عندما يكون هناك شيء يستحق السعي.",
-    strengths: ["الطموح", "الحسم", "القدرة على الدفع للأمام", "حب الإنجاز"],
-    watchouts: ["قد تضيق من البطء أو التردد الطويل", "قد تبدو مباشرًا أكثر من اللازم في بعض اللحظات"],
-    advice: "كلما جمعت بين سرعتك والإنصات، أصبحت أكثر تأثيرًا واستقرارًا."
-  },
-  creator: {
-    title: "الشخصية الإبداعية المرنة",
-    summary: "تميل إلى التجديد واكتشاف الزوايا المختلفة في الأشياء. لديك رغبة داخلية في التميز وكسر النمط المعتاد.",
-    style: "تبدع أكثر في البيئات التي تمنحك مساحة للحركة والتفكير المختلف، وتضع بصمتك عندما يُسمح لك بالتعبير الحقيقي.",
-    strengths: ["الابتكار", "المرونة", "الحس المختلف", "القدرة على رؤية احتمالات جديدة"],
-    watchouts: ["قد تمل من الروتين سريعًا", "قد تحتاج أحيانًا إلى تثبيت أفكارك بخطة أوضح"],
-    advice: "اربط أفكارك الجميلة بخطوات تنفيذ صغيرة حتى تخرج بأفضل صورة ممكنة."
-  },
-  connector: {
-    title: "الشخصية الإنسانية الاجتماعية",
-    summary: "أنت تميل إلى فهم الناس وبناء القرب والراحة في العلاقات. حضورك يميل لأن يكون لطيفًا، متفهمًا، ومطمئنًا لمن حولك.",
-    style: "تتألق في الأجواء التي فيها تعاون وتواصل وإنسانية، وتُظهر أفضل ما فيك عندما يكون المناخ النفسي جيدًا.",
-    strengths: ["الاحتواء", "التواصل", "الاستماع", "بناء الثقة"],
-    watchouts: ["قد تحمل مشاعر الآخرين أكثر من اللازم", "قد تتردد أحيانًا حتى لا تزعج أحدًا"],
-    advice: "قلبك نقطة قوة، لكن قوته تزيد أكثر عندما تضع حدودك بوضوح."
-  },
-  balanced: {
-    title: "الشخصية المتوازنة",
-    summary: "إجاباتك تُظهر توازنًا بين أكثر من جانب، وهذا يعني أنك لست أسير نمط واحد. لديك مرونة جيدة وقدرة على التكيف مع مواقف مختلفة.",
-    style: "يناسبك التنوع، وتستطيع التحرك بين الهدوء والحسم، وبين العقل والعلاقة، حسب ما تتطلبه اللحظة.",
-    strengths: ["المرونة", "التكيف", "الرؤية المتزنة", "فهم أكثر من زاوية"],
-    watchouts: ["قد تحتار أحيانًا بين عدة اتجاهات جيدة", "قد تحتاج في بعض المواقف إلى تحديد أولوياتك بشكل أسرع"],
-    advice: "قوتك في التوازن، لكن الأفضل أن تحدد ما هو الأهم لك أولًا ثم تتحرك بثبات."
-  }
-};
+function getSectionAdvice(key, level) {
+  const adviceMap = {
+    mental: {
+      "مرتفع": "لديك درجة جيدة من الوعي الذاتي الصحي، ويظهر ذلك في فهمك لمشاعرك وقدرتك على التعامل مع الضغط بصورة متوازنة.",
+      "جيد": "لديك أساس جيد، وقد تستفيد أكثر من الثبات على المراجعة الذاتية والاهتمام باستعادة توازنك النفسي في الأوقات الضاغطة.",
+      "متوسط": "هناك وعي موجود، لكنه يحتاج إلى مزيد من التنظيم والانتباه لمشاعرك وطرق التعامل معها في المواقف الصعبة.",
+      "يحتاج إلى دعم": "قد يكون من المفيد أن تبدأ بخطوات بسيطة مثل ملاحظة مشاعرك، وتحديد ما يرهقك، والبحث عن وسائل ثابتة تساعدك على التوازن."
+    },
+    social: {
+      "مرتفع": "يبدو أنك واعٍ بذاتك في الجانب الاجتماعي، وتعرف كيف تتعامل مع الناس بصورة متوازنة ومحترمة.",
+      "جيد": "لديك مستوى جيد اجتماعيًا، وقد يفيدك تطوير بعض الجوانب مثل التعبير عن الحدود أو إدارة الخلاف بهدوء أكبر.",
+      "متوسط": "لديك بدايات جيدة، لكن الجانب الاجتماعي يحتاج إلى مزيد من الوعي في الاستماع وفهم الآخرين وتنظيم ردود الفعل.",
+      "يحتاج إلى دعم": "قد يساعدك أن تبدأ بالتركيز على مهارتين أساسيتين: الاستماع الجيد، والتعبير الواضح عن مشاعرك وحدودك."
+    },
+    religious: {
+      "مرتفع": "لديك مستوى جيد من التفقه الديني فيما يلزمك، ويظهر عندك الاهتمام بالتعلم والتثبت وربط المعرفة بالسلوك.",
+      "جيد": "لديك أرضية طيبة، وما تحتاجه غالبًا هو مزيد من الانتظام في التعلم والعودة إلى المصادر الموثوقة بصورة أوضح.",
+      "متوسط": "هناك اهتمام موجود، لكنه يحتاج إلى ترتيب أكبر وخطة أبسط في تعلم ما يلزمك من أمور الدين.",
+      "يحتاج إلى دعم": "البداية المناسبة هنا هي التدرج: تعلم الأساسيات أولًا، واسأل من تثق بعلمه، وابتعد عن التلقي العشوائي."
+    }
+  };
 
-function buildDimensionPills(sortedDims) {
-  return sortedDims.slice(0, 4).map(([key, val]) => {
-    return `<span class="result-pill">${dimensionLabels[key]}: ${val}</span>`;
-  }).join("");
+  return adviceMap[key][level];
+}
+
+function buildSectionCard(key) {
+  const percentage = getSectionPercentage(key);
+  const level = getSectionLevel(percentage);
+
+  return `
+    <div class="result-card section-result-card">
+      <h4>${sectionLabels[key]}</h4>
+      <p><strong>المستوى:</strong> ${level}</p>
+      <div class="result-meter">
+        <div class="result-meter-fill" style="width:${percentage}%"></div>
+      </div>
+      <p><strong>النسبة التقريبية:</strong> ${percentage}%</p>
+      <p>${getSectionAdvice(key, level)}</p>
+    </div>
+  `;
+}
+
+function getOverallSummary() {
+  const mentalLevel = getSectionLevel(getSectionPercentage("mental"));
+  const socialLevel = getSectionLevel(getSectionPercentage("social"));
+  const religiousLevel = getSectionLevel(getSectionPercentage("religious"));
+
+  return `
+    النتيجة العامة توضّح مستواك الحالي في ثلاثة محاور أساسية:
+    <br>• الوعي الذاتي الصحي: <strong>${mentalLevel}</strong>
+    <br>• الوعي الذاتي الاجتماعي: <strong>${socialLevel}</strong>
+    <br>• التفقه الديني: <strong>${religiousLevel}</strong>
+    <br><br>
+    هذه القراءة عامة، وهدفها مساعدتك على ملاحظة الجوانب الأقوى والجوانب التي تحتاج إلى مزيد من العناية.
+  `;
 }
 
 function showResult() {
-  const sortedDims = getTopDimensions();
-  const archetypeKey = pickArchetype(sortedDims);
-  const result = archetypes[archetypeKey];
-
-  appendMessage(`شكرًا يا ${escapeHtml(userName)}، تم الانتهاء من الاستبيان ✅`, "bot");
+  appendMessage(`شكرًا لك يا ${escapeHtml(userName)}، لقد أنهيت الاستبيان بنجاح ✅`, "bot");
 
   const resultBox = document.createElement("div");
   resultBox.className = "message bot";
   resultBox.innerHTML = `
     <div class="bubble">
-      <div class="result-header">${result.title}</div>
-      <div>${result.summary}</div>
-      <div class="result-pills">${buildDimensionPills(sortedDims)}</div>
+      <div class="result-header">النتيجة النهائية</div>
+      <div>${getOverallSummary()}</div>
 
       <div class="result-grid">
+        ${buildSectionCard("mental")}
+        ${buildSectionCard("social")}
+        ${buildSectionCard("religious")}
         <div class="result-card">
-          <h4>ملامح شخصيتك</h4>
-          <p>${result.style}</p>
-        </div>
-        <div class="result-card">
-          <h4>نصيحة مناسبة لك</h4>
-          <p>${result.advice}</p>
-        </div>
-        <div class="result-card">
-          <h4>أبرز نقاط القوة</h4>
-          <ul>${result.strengths.map(item => `<li>${item}</li>`).join("")}</ul>
-        </div>
-        <div class="result-card">
-          <h4>أمور تحتاج انتباهًا</h4>
-          <ul>${result.watchouts.map(item => `<li>${item}</li>`).join("")}</ul>
+          <h4>ملاحظة مهمة</h4>
+          <p>
+            هذه النتيجة قراءة عامة مبنية على اختياراتك داخل الاستبيان،
+            وهي وسيلة للتأمل والمراجعة وليست حكمًا نهائيًا على شخصيتك أو مستواك.
+          </p>
         </div>
       </div>
     </div>
@@ -556,9 +635,12 @@ function showResult() {
 function restartQuiz() {
   userName = "";
   currentStep = 0;
-  dimensions.forEach((d) => scores[d] = 0);
+  scores.mental = 0;
+  scores.social = 0;
+  scores.religious = 0;
   questions.forEach((q) => delete q.selectedLabel);
   renderIntro();
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-renderIntro();
+showHomePage();
